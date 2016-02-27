@@ -1,7 +1,7 @@
 
 --------------------------------
 -- @module Label
--- @extend SpriteBatchNode,LabelProtocol
+-- @extend Node,LabelProtocol,BlendProtocol
 -- @parent_module cc
 
 --------------------------------
@@ -38,11 +38,13 @@
 -- @return float#float ret (return value: float)
         
 --------------------------------
--- Disable all effect to Label.
--- @function [parent=#Label] disableEffect 
+-- @overload self, int         
+-- @overload self         
+-- @function [parent=#Label] disableEffect
 -- @param self
+-- @param #int effect
 -- @return Label#Label self (return value: cc.Label)
-        
+
 --------------------------------
 -- Sets a new TTF configuration to Label.<br>
 -- see `TTFConfig`
@@ -56,6 +58,12 @@
 -- @function [parent=#Label] getTextColor 
 -- @param self
 -- @return color4b_table#color4b_table ret (return value: color4b_table)
+        
+--------------------------------
+-- 
+-- @function [parent=#Label] getBlendFunc 
+-- @param self
+-- @return BlendFunc#BlendFunc ret (return value: cc.BlendFunc)
         
 --------------------------------
 -- Makes the Label exactly this untransformed width.<br>
@@ -174,6 +182,13 @@
 -- @return float#float ret (return value: float)
         
 --------------------------------
+-- 
+-- @function [parent=#Label] removeAllChildrenWithCleanup 
+-- @param self
+-- @param #bool cleanup
+-- @return Label#Label self (return value: cc.Label)
+        
+--------------------------------
 -- @overload self, cc.Texture2D, int, int, int         
 -- @overload self, string, int, int, int         
 -- @overload self, string         
@@ -236,7 +251,7 @@
 --------------------------------
 -- Sets the text color of Label.<br>
 -- The text color is different from the color of Node.<br>
--- warning Limiting use to only when the Label created with true type font or system font. 
+-- warning Limiting use to only when the Label created with true type font or system font.
 -- @function [parent=#Label] setTextColor 
 -- @param self
 -- @param #color4b_table color
@@ -289,6 +304,13 @@
 -- @return float#float ret (return value: float)
         
 --------------------------------
+-- 
+-- @function [parent=#Label] setBlendFunc 
+-- @param self
+-- @param #cc.BlendFunc blendFunc
+-- @return Label#Label self (return value: cc.Label)
+        
+--------------------------------
 --  Returns the Label's text horizontal alignment.
 -- @function [parent=#Label] getTextAlignment 
 -- @param self
@@ -328,7 +350,7 @@
 -- param text The initial text.<br>
 -- param hAlignment Text horizontal alignment.<br>
 -- param maxLineWidth The max line width.<br>
--- param imageOffset <br>
+-- param imageOffset<br>
 -- return An automatically released Label object.<br>
 -- see setBMFontFilePath setMaxLineWidth
 -- @function [parent=#Label] createWithBMFont 
@@ -364,7 +386,7 @@
 -- param text The initial text.<br>
 -- param font A font file or a font family name.<br>
 -- param fontSize The font size. This value must be > 0.<br>
--- param dimensions <br>
+-- param dimensions<br>
 -- param hAlignment The text horizontal alignment.<br>
 -- param vAlignment The text vertical alignment.<br>
 -- warning It will generate texture by the platform-dependent code.<br>
@@ -386,15 +408,6 @@
 -- @param #cc.Renderer renderer
 -- @param #mat4_table transform
 -- @param #unsigned int flags
--- @return Label#Label self (return value: cc.Label)
-        
---------------------------------
--- 
--- @function [parent=#Label] addChild 
--- @param self
--- @param #cc.Node child
--- @param #int zOrder
--- @param #int tag
 -- @return Label#Label self (return value: cc.Label)
         
 --------------------------------
@@ -425,10 +438,9 @@
         
 --------------------------------
 -- 
--- @function [parent=#Label] setBlendFunc 
+-- @function [parent=#Label] getScaleX 
 -- @param self
--- @param #cc.BlendFunc blendFunc
--- @return Label#Label self (return value: cc.Label)
+-- @return float#float ret (return value: float)
         
 --------------------------------
 -- 
@@ -438,12 +450,6 @@
 -- @param #mat4_table parentTransform
 -- @param #unsigned int parentFlags
 -- @return Label#Label self (return value: cc.Label)
-        
---------------------------------
--- 
--- @function [parent=#Label] getScaleX 
--- @param self
--- @return float#float ret (return value: float)
         
 --------------------------------
 -- 
@@ -467,15 +473,17 @@
         
 --------------------------------
 -- 
--- @function [parent=#Label] sortAllChildren 
+-- @function [parent=#Label] updateDisplayedOpacity 
 -- @param self
+-- @param #unsigned char parentOpacity
 -- @return Label#Label self (return value: cc.Label)
         
 --------------------------------
 -- 
--- @function [parent=#Label] updateDisplayedOpacity 
+-- @function [parent=#Label] removeChild 
 -- @param self
--- @param #unsigned char parentOpacity
+-- @param #cc.Node child
+-- @param #bool cleanup
 -- @return Label#Label self (return value: cc.Label)
         
 --------------------------------

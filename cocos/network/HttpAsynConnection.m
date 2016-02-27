@@ -51,17 +51,20 @@
     [sslFile release];
     [responseHeader release];
     [responseData release];
-    [statusString release];
     [responseError release];
     [conn release];
     [runLoop release];
+    [connError release];
     
     [super dealloc];
 }
 
 - (void) startRequest:(NSURLRequest *)request
 {
+#ifdef COCOS2D_DEBUG
     NSLog(@"Starting to load %@", srcURL);
+#endif
+    
     finish = false;
 
     self.responseData = [NSMutableData data];
@@ -90,7 +93,9 @@
  **/
 - (void) connection:(NSURLConnection *)connection 
  didReceiveResponse:(NSURLResponse *)response {
+#ifdef COCOS2D_DEBUG
     NSLog(@"Received response from request to url %@", srcURL);
+#endif
     
     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
     //NSLog(@"All headers = %@", [httpResponse allHeaderFields]);
@@ -178,10 +183,12 @@
     {
         CFDataRef errDataRef = SecTrustCopyExceptions(serverTrust);
         SecTrustSetExceptions(serverTrust, errDataRef);
-        
         SecTrustEvaluate(serverTrust, &trustResult);
+        [(id)errDataRef release];
     }
-    
+    [certData release];
+    [(id)certArrayRef release];
+    [(id)certArrayRef release];
     //Did our custom trust chain evaluate successfully?
     return trustResult = kSecTrustResultUnspecified || trustResult == kSecTrustResultProceed;    
 }

@@ -67,12 +67,17 @@ namespace cocostudio
         CC_SAFE_DELETE(_instanceSprite3DReader);
     }
     
+    void Sprite3DReader::destroyInstance()
+    {
+        CC_SAFE_DELETE(_instanceSprite3DReader);
+    }
+    
     Vec2 Sprite3DReader::getVec2Attribute(const tinyxml2::XMLAttribute* attribute) const
     {
         if(!attribute)
             return Vec2::ZERO;
         
-        Vec2 ret(Vec2::ZERO);
+        Vec2 ret;
         std::string attriname;
         
         while (attribute)
@@ -80,11 +85,11 @@ namespace cocostudio
             attriname = attribute->Name();
             std::string value = attribute->Value();
             
-            if (attriname == "ValueX")
+            if (attriname == "X")
             {
                 ret.x = atof(value.c_str());
             }
-            else if (attriname == "ValueY")
+            else if (attriname == "Y")
             {
                 ret.y = atof(value.c_str());
             }

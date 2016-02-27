@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
  Copyright (c) 2013 cocos2d-x.org
  
  http://www.cocos2d-x.org
@@ -72,7 +72,8 @@ public:
     static void destroyInstance();
     
     CSLoader();
-    void purge();
+    /** @deprecated Use method destroyInstance() instead */
+    CC_DEPRECATED_ATTRIBUTE void purge();    
     
     void init();
     

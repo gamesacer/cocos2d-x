@@ -23,7 +23,7 @@
  ****************************************************************************/
 
 #include "platform/CCPlatformConfig.h"
-#if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WINRT || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 
 #include "NewAudioEngineTest.h"
 #include "ui/CocosGUI.h"
@@ -32,48 +32,17 @@ using namespace cocos2d;
 using namespace cocos2d::ui;
 using namespace cocos2d::experimental;
 
+AudioEngineTests::AudioEngineTests()
+{
+    ADD_TEST_CASE(AudioControlTest);
+    ADD_TEST_CASE(PlaySimultaneouslyTest);
+    ADD_TEST_CASE(AudioProfileTest);
+    ADD_TEST_CASE(InvalidAudioFileTest);
+    ADD_TEST_CASE(LargeAudioFileTest);
+}
+
 namespace {
     
-std::function<Layer*()> createFunctions[] =
-{
-    CL(AudioControlTest),
-    CL(PlaySimultaneouslyTest),
-    CL(AudioProfileTest),
-    CL(InvalidAudioFileTest),
-    CL(LargeAudioFileTest)
-};
-
-unsigned int TEST_CASE_COUNT = sizeof(createFunctions) / sizeof(createFunctions[0]);
-
-int s_sceneIdx = -1;
-Layer* createTest(int index)
-{
-    auto layer = (createFunctions[index])();;    
-    return layer;
-}
-
-Layer* nextAction()
-{
-    s_sceneIdx++;
-    s_sceneIdx = s_sceneIdx % TEST_CASE_COUNT;
-    
-    return createTest(s_sceneIdx);
-}
-
-Layer* backAction()
-{
-    s_sceneIdx--;
-    if( s_sceneIdx < 0 )
-        s_sceneIdx = TEST_CASE_COUNT -1;
-    
-    return createTest(s_sceneIdx);
-}
-
-Layer* restartAction()
-{
-    return createTest(s_sceneIdx);
-}
-
     class TextButton : public cocos2d::Label
     {
     public:
@@ -109,8 +78,8 @@ Layer* restartAction()
         
     private:
         TextButton()
-        : _enabled(true)
-        , _onTriggered(nullptr)
+        : _onTriggered(nullptr)
+        , _enabled(true)
         {
             auto listener = EventListenerTouchOneByOne::create();
             listener->setSwallowTouches(true);
@@ -291,51 +260,10 @@ Layer* restartAction()
     };
 }
 
-void AudioEngineTestScene::runThisTest()
-{
-    CCASSERT(AudioEngine::lazyInit(),"Fail to initialize AudioEngine!");
-    
-    s_sceneIdx = -1;
-    auto layer = nextAction();
-    addChild(layer);
-    
-    Director::getInstance()->replaceScene(this);
-}
-
 void AudioEngineTestDemo::onExit()
 {
     AudioEngine::stopAll();
-    BaseTest::onExit();
-}
-
-void AudioEngineTestDemo::backCallback(Ref* sender)
-{
-    auto scene = new AudioEngineTestScene();
-    auto layer = backAction();
-    
-    scene->addChild(layer);
-    Director::getInstance()->replaceScene(scene);
-    scene->release();
-}
-
-void AudioEngineTestDemo::nextCallback(Ref* sender)
-{
-    auto scene = new AudioEngineTestScene();
-    auto layer = nextAction();
-    
-    scene->addChild(layer);
-    Director::getInstance()->replaceScene(scene);
-    scene->release();
-}
-
-void AudioEngineTestDemo::restartCallback(Ref* sender)
-{
-    auto scene = new AudioEngineTestScene();
-    auto layer = restartAction();
-    
-    scene->addChild(layer);
-    Director::getInstance()->replaceScene(scene);
-    scene->release();
+    TestCase::onExit();
 }
 
 std::string AudioEngineTestDemo::title() const
@@ -375,7 +303,7 @@ bool AudioControlTest::init()
         }
     });
     _playItem = playItem;
-    playItem->setPosition(layerSize.width * 0.3f,layerSize.height * 0.7f);
+    playItem->setPosition(layerSize.width * 0.3f,layerSize.height * 0.8f);
     addChild(playItem);
     
     auto stopItem = TextButton::create("stop", [&](TextButton* button){
@@ -386,7 +314,7 @@ bool AudioControlTest::init()
             ((TextButton*)_playItem)->setEnabled(true);
         }
     });
-    stopItem->setPosition(layerSize.width * 0.7f,layerSize.height * 0.7f);
+    stopItem->setPosition(layerSize.width * 0.7f,layerSize.height * 0.8f);
     addChild(stopItem);
     
     auto pauseItem = TextButton::create("pause", [&](TextButton* button){
@@ -394,7 +322,7 @@ bool AudioControlTest::init()
             AudioEngine::pause(_audioID);
         }
     });
-    pauseItem->setPosition(layerSize.width * 0.3f,layerSize.height * 0.6f);
+    pauseItem->setPosition(layerSize.width * 0.3f,layerSize.height * 0.7f);
     addChild(pauseItem);
     
     auto resumeItem = TextButton::create("resume", [&](TextButton* button){
@@ -402,32 +330,38 @@ bool AudioControlTest::init()
             AudioEngine::resume(_audioID);
         }
     });
-    resumeItem->setPosition(layerSize.width * 0.7f,layerSize.height * 0.6f);
+    resumeItem->setPosition(layerSize.width * 0.7f,layerSize.height * 0.7f);
     addChild(resumeItem);
     
     auto loopItem = TextButton::create("enable-loop", [&](TextButton* button){
         _loopEnabled = !_loopEnabled;
-        
-        if (_audioID != AudioEngine::INVALID_AUDIO_ID ) {
+
+        if (_audioID != AudioEngine::INVALID_AUDIO_ID) {
             AudioEngine::setLoop(_audioID, _loopEnabled);
         }
-        if(_loopEnabled){
+        if (_loopEnabled){
             button->setString("disable-loop");
         }
         else {
             button->setString("enable-loop");
         }
     });
-    loopItem->setPosition(layerSize.width * 0.3f,layerSize.height * 0.5f);
+    loopItem->setPosition(layerSize.width * 0.5f, layerSize.height * 0.5f);
     addChild(loopItem);
     
+    auto preloadItem = TextButton::create("preload", [&](TextButton* button){
+        AudioEngine::preload("background.mp3");
+    });
+    preloadItem->setPosition(layerSize.width * 0.3f, layerSize.height * 0.6f);
+    addChild(preloadItem);
+
     auto uncacheItem = TextButton::create("uncache", [&](TextButton* button){
         AudioEngine::uncache("background.mp3");
         
         _audioID = AudioEngine::INVALID_AUDIO_ID;
         ((TextButton*)_playItem)->setEnabled(true);
     });
-    uncacheItem->setPosition(layerSize.width * 0.7f,layerSize.height * 0.5f);
+    uncacheItem->setPosition(layerSize.width * 0.7f,layerSize.height * 0.6f);
     addChild(uncacheItem);
     
     auto volumeSlider = SliderEx::create();

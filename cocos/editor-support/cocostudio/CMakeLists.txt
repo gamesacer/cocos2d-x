@@ -3,7 +3,7 @@ if(WINDOWS AND BUILD_SHARED_LIBS)
   ADD_DEFINITIONS (-D_USRSTUDIODLL)
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ")
 
 set(COCOS_CS_SRC
 
@@ -44,6 +44,7 @@ set(COCOS_CS_SRC
   editor-support/cocostudio/TriggerObj.cpp
   editor-support/cocostudio/FlatBuffersSerialize.cpp
   editor-support/cocostudio/CCObjectExtensionData.cpp
+  editor-support/cocostudio/CocoStudio.cpp
   editor-support/cocostudio/WidgetReader/NodeReader/NodeReader.cpp
   editor-support/cocostudio/WidgetReader/SingleNodeReader/SingleNodeReader.cpp
   editor-support/cocostudio/WidgetReader/SpriteReader/SpriteReader.cpp 

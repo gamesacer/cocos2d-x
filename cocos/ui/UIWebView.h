@@ -27,7 +27,7 @@
 
 #include "platform/CCPlatformConfig.h"
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS )
 
 
 #include "ui/UIWidget.h"
@@ -50,6 +50,7 @@ class WebViewImpl;
  *
  * @note WebView displays web pages base on system widget.
  * It's mean WebView displays web pages above all graphical elements of cocos2d-x.
+ * @js NA
  */
 class CC_GUI_DLL WebView : public cocos2d::ui::Widget {
 public:
@@ -215,6 +216,7 @@ protected:
    
     ccWebViewCallback _onJSCallback;
 
+CC_CONSTRUCTOR_ACCESS:
     /**
      * Default constructor.
      */

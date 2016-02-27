@@ -25,15 +25,16 @@
 #include "UIEditBoxTest.h"
 #include "testResource.h"
 
-// UIEditBoxTest
-UIEditBoxTest::UIEditBoxTest()
+USING_NS_CC;
+USING_NS_CC_EXT;
+using namespace cocos2d::ui;
+
+UIEditBoxTests::UIEditBoxTests()
 {
-    
+    ADD_TEST_CASE(UIEditBoxTest);
 }
 
-UIEditBoxTest::~UIEditBoxTest()
-{
-}
+// UIEditBoxTest
 
 bool UIEditBoxTest::init()
 {
@@ -82,15 +83,10 @@ bool UIEditBoxTest::init()
         // bottom
         _editEmail = ui::EditBox::create(Size(editBoxSize.width, editBoxSize.height), "extensions/yellow_edit.png");
         _editEmail->setPosition(Vec2(visibleOrigin.x+visibleSize.width/2, visibleOrigin.y+visibleSize.height/4));
-        _editEmail->setAnchorPoint(Vec2(0.5, 1.0f));
         _editEmail->setPlaceHolder("Email:");
         _editEmail->setInputMode(ui::EditBox::InputMode::EMAIL_ADDRESS);
         _editEmail->setDelegate(this);
         addChild(_editEmail);
-        
-        this->setPosition(Vec2(10, 20));
-        
-      
         
         return true;
     }

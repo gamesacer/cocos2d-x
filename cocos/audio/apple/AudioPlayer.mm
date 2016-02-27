@@ -68,13 +68,11 @@ bool AudioPlayer::play2d(AudioCache* cache)
     alSourcei(_alSource, AL_BUFFER, 0);
     alSourcef(_alSource, AL_PITCH, 1.0f);
     alSourcef(_alSource, AL_GAIN, _volume);
+    alSourcei(_alSource, AL_LOOPING, AL_FALSE);
     
     if (_audioCache->_queBufferFrames == 0) {
         if (_loop) {
             alSourcei(_alSource, AL_LOOPING, AL_TRUE);
-        }
-        else {
-            alSourcei(_alSource, AL_LOOPING, AL_FALSE);
         }
         alSourcei(_alSource, AL_BUFFER, _audioCache->_alBufferId);
         
@@ -116,7 +114,9 @@ void AudioPlayer::rotateBufferThread(int offsetFrame)
     ALint bufferProcessed = 0;
     ExtAudioFileRef extRef = nullptr;
     
-    auto fileURL = (CFURLRef)[[NSURL fileURLWithPath:[NSString stringWithCString:_audioCache->_fileFullPath.c_str() encoding:[NSString defaultCStringEncoding]]] retain];
+    NSString *fileFullPath = [[NSString alloc] initWithCString:_audioCache->_fileFullPath.c_str() encoding:[NSString defaultCStringEncoding]];
+    auto fileURL = (CFURLRef)[[NSURL alloc] initFileURLWithPath:fileFullPath];
+    [fileFullPath release];
     char* tmpBuffer = (char*)malloc(_audioCache->_queBufferBytes);
     auto frames = _audioCache->_queBufferFrames;
     
